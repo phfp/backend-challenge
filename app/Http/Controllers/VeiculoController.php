@@ -8,8 +8,8 @@ use App\Catalogo;
 
 class VeiculoController extends Controller
 {
-    //
     public function buscar(Request $request){
+
         $catalogo = new Catalogo();
         
         $veiculos = $catalogo->veiculos($request);

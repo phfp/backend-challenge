@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Catalogo extends Model
 {
-    //
-
     public function veiculos($request){
 
         $url = 'https://seminovos.com.br/';
@@ -26,16 +24,28 @@ class Catalogo extends Model
             $url .= '/'.$request->modelo;
         }
 
-        if($request->ano){
-            $url .= '/'.$request->ano;
+        if($request->ano1 && $request->ano2){
+            $url .= '/ano-'.$request->ano1.'-'.$request->ano2;
+        }else if($request->ano1 && !$request->ano2) {
+            $url .= '/ano-'.$request->ano1.'-';
+        }else if(!$request->ano1 && $request->ano2) {
+            $url .= '/ano--'.$request->ano2;
         }
 
-        if($request->preco){
-            $url .= '/'.$request->preco;
+        if($request->preco1 && $request->preco2){
+            $url .= '/preco-'.$request->preco1.'-'.$request->preco2;
+        }else if($request->preco1 && !$request->preco2) {
+            $url .= '/preco-'.$request->preco1.'-';
+        }else if(!$request->preco1 && $request->preco2) {
+            $url .= '/preco--'.$request->preco2;
         }
 
-        if($request->condicao){
-            $url .= '/'.$request->condicao;
+        if($request->estado){
+            $url .= '/estado-'.$request->estado;
+        }
+
+        if($request->origem){
+            $url .= '/origem-'.$request->origem;
         }
 
         if($request->placa){
@@ -46,6 +56,6 @@ class Catalogo extends Model
 
         $veiculos = file_get_contents($url);
 
-        return $veiculos;
+        return $url;
     }
 }
