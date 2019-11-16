@@ -16,4 +16,14 @@ class VeiculoController extends Controller
 
         return $veiculos;
     }
+
+    public function visualizar(Request $request){
+
+        $catalogo = new Catalogo();
+        
+        $veiculo = $catalogo->veiculo($request);
+
+        return $veiculo;
+    }
+    
 }

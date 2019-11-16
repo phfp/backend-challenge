@@ -18,3 +18,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('search', 'VeiculoController@buscar');
+Route::get('detalhes/{sku}', 'VeiculoController@visualizar');
