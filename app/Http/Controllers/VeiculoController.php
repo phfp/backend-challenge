@@ -8,6 +8,8 @@ use App\Catalogo;
 
 class VeiculoController extends Controller
 {
+
+    //Função para listar os veículos
     public function buscar(Request $request){
 
         $catalogo = new Catalogo();
@@ -17,6 +19,7 @@ class VeiculoController extends Controller
         return $veiculos;
     }
 
+    //Função para visualizar as informações de um determicado veículo
     public function visualizar(Request $request){
 
         $catalogo = new Catalogo();

@@ -13,9 +13,14 @@ use Illuminate\Http\Request;
 |
 */
 
+/*
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+*/
 
+//Rota para listagem dos veículos
 Route::post('search', 'VeiculoController@buscar');
+
+//Rota para exibição das informações dos veículos
 Route::get('detalhes/{sku}', 'VeiculoController@visualizar');
