@@ -20,7 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 */
 
 //Rota para listagem dos veículos
-Route::post('search', 'VeiculoController@buscar');
+Route::post('search', 'VeiculoController@listarVeiculos');
 
 //Rota para exibição das informações dos veículos
-Route::get('detalhes/{sku}', 'VeiculoController@visualizar');
+Route::get('detalhes/{sku}', 'VeiculoController@buscarDetalhesVeiculo');

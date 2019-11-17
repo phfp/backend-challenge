@@ -10,7 +10,7 @@ class VeiculoController extends Controller
 {
 
     //Função para listar os veículos
-    public function buscar(Request $request){
+    public function listarVeiculos(Request $request){
 
         $catalogo = new Catalogo();
         
@@ -19,8 +19,8 @@ class VeiculoController extends Controller
         return $veiculos;
     }
 
-    //Função para visualizar as informações de um determicado veículo
-    public function visualizar(Request $request){
+    //Função para visualizar as informações de um determinado veículo
+    public function buscarDetalhesVeiculo(Request $request){
 
         $catalogo = new Catalogo();
         

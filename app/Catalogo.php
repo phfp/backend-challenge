@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Catalogo extends Model
 {
+
     //Obtendo os resultados da busca
 
     public function veiculos($request){
@@ -32,21 +33,21 @@ class Catalogo extends Model
         }
 
         //Filtro 'anos'
-        if($request->ano1 && $request->ano2){
-            $url .= '/ano-'.$request->ano1.'-'.$request->ano2;
-        } else if($request->ano1 && !$request->ano2){
-            $url .= '/ano-'.$request->ano1.'-';
-        } else if(!$request->ano1 && $request->ano2){
-            $url .= '/ano--'.$request->ano2;
+        if($request->anoMin && $request->anoMax){
+            $url .= '/ano-'.$request->anoMin.'-'.$request->anoMax;
+        } else if($request->anoMin && !$request->anoMax){
+            $url .= '/ano-'.$request->anoMin.'-';
+        } else if(!$request->anoMin && $request->anoMax){
+            $url .= '/ano--'.$request->anoMax;
         }
 
         //Filtro 'precos'
-        if($request->preco1 && $request->preco2){
-            $url .= '/preco-'.$request->preco1.'-'.$request->preco2;
-        } else if($request->preco1 && !$request->preco2){
-            $url .= '/preco-'.$request->preco1.'-';
-        } else if(!$request->preco1 && $request->preco2){
-            $url .= '/preco--'.$request->preco2;
+        if($request->precoMin && $request->precoMax){
+            $url .= '/preco-'.$request->precoMin.'-'.$request->precoMax;
+        } else if($request->precoMin && !$request->precoMax){
+            $url .= '/preco-'.$request->precoMin.'-';
+        } else if(!$request->precoMin && $request->precoMax){
+            $url .= '/preco--'.$request->precoMax;
         }
 
         //Filtro 'estado'
@@ -72,16 +73,16 @@ class Catalogo extends Model
 
         //Obtendo o número de páginas geradas na busca
         $numPaginas = explode('de um total de <b class="cor-laranja">',$conteudo);
-        $numPaginas2 = explode("</b>",$numPaginas[1]);
+        $numPaginasAux = explode("</b>",$numPaginas[1]);
 
         //Variável que recebe a descrição de cada veículo
         $veiculos = null;
 
         //Variável que guarda o número da página atualmente manipulda
-        $pg = 1;
+        $paginaAtual = 1;
 
         //Laco que percorre por todas as páginas geradas na pesquisa de veículos
-        for($i=1; $i<=$numPaginas2[0]; $i++){
+        for($i=1; $i<=$numPaginasAux[0]; $i++){
 
             //Filtro do conteúdo             
             $conteudo = file_get_contents($url.'&page='.$i);
@@ -91,13 +92,13 @@ class Catalogo extends Model
             for($j=0; $j<$quantidadeItensPorPagina; $j++){
                 
                 //Montagem e armazenamento da descricao de cada item
-                $conteudoFiltro = explode('<span itemprop="description">',$conteudo);            
-                $conteudoFiltro2 = explode("</span>",$conteudoFiltro[$j+1]);
-                $veiculos[$pg] = $conteudoFiltro2[0];
-                $conteudoFiltro = explode('"sku">',$conteudo);            
-                $conteudoFiltro2 = explode("</span>",$conteudoFiltro[$j+1]);
-                $veiculos[$pg] .= ' - '.$_SERVER['HTTP_HOST'].'/api/detalhes'.'/'.$conteudoFiltro2[0];
-                $pg++;
+                $filtroConteudo = explode('<span itemprop="description">',$conteudo);            
+                $filtroConteudoAux = explode("</span>",$filtroConteudo[$j+1]);
+                $veiculos[$paginaAtual] = $filtroConteudoAux[0];
+                $filtroConteudo = explode('"sku">',$conteudo);            
+                $filtroConteudoAux = explode("</span>",$filtroConteudo[$j+1]);
+                $veiculos[$paginaAtual] .= ' - '.$_SERVER['HTTP_HOST'].'/api/detalhes'.'/'.$filtroConteudoAux[0];
+                $paginaAtual++;
             }
         }
 
@@ -115,7 +116,7 @@ class Catalogo extends Model
         $conteudo = file_get_contents($url);
 
         //Array para guardar as informações
-        $informacoes = array(
+        $informacoesVeiculo = array(
             'descricao'         => '',
             'ano'               => '',
             'quilometragem'     => '',
@@ -128,42 +129,42 @@ class Catalogo extends Model
         );
 
         //Filtro e armazenamento das informações
-        $conteudoFiltro = explode('<h1 class="mb-0" itemprop="name">',$conteudo);            
-        $conteudoFiltro2 = explode("</h1>",$conteudoFiltro[1]);        
-        $informacoes['descricao'] = $conteudoFiltro2[0];
+        $filtroConteudo = explode('<h1 class="mb-0" itemprop="name">',$conteudo);            
+        $filtroConteudoAux = explode("</h1>",$filtroConteudo[1]);        
+        $informacoesVeiculo['descricao'] = $filtroConteudoAux[0];
 
-        $conteudoFiltro = explode('itemprop="modelDate" content="',$conteudo);            
-        $conteudoFiltro2 = explode('">',$conteudoFiltro[1]);        
-        $informacoes['ano'] = $conteudoFiltro2[0];
+        $filtroConteudo = explode('itemprop="modelDate" content="',$conteudo);            
+        $filtroConteudoAux = explode('">',$filtroConteudo[1]);        
+        $informacoesVeiculo['ano'] = $filtroConteudoAux[0];
 
-        $conteudoFiltro = explode('itemprop="mileageFromOdometer">',$conteudo);            
-        $conteudoFiltro2 = explode("</span>",$conteudoFiltro[1]);        
-        $informacoes['quilometragem'] = $conteudoFiltro2[0];
+        $filtroConteudo = explode('itemprop="mileageFromOdometer">',$conteudo);            
+        $filtroConteudoAux = explode("</span>",$filtroConteudo[1]);        
+        $informacoesVeiculo['quilometragem'] = $filtroConteudoAux[0];
 
-        $conteudoFiltro = explode('title="Tipo de transmissão">',$conteudo);            
-        $conteudoFiltro2 = explode("</span>",$conteudoFiltro[1]);        
-        $informacoes['cambio'] = $conteudoFiltro2[0];
+        $filtroConteudo = explode('title="Tipo de transmissão">',$conteudo);            
+        $filtroConteudoAux = explode("</span>",$filtroConteudo[1]);        
+        $informacoesVeiculo['cambio'] = $filtroConteudoAux[0];
 
-        $conteudoFiltro = explode('<span title="Portas">',$conteudo);            
-        $conteudoFiltro2 = explode("</span>",$conteudoFiltro[1]);        
-        $informacoes['portas'] = $conteudoFiltro2[0];
+        $filtroConteudo = explode('<span title="Portas">',$conteudo);            
+        $filtroConteudoAux = explode("</span>",$filtroConteudo[1]);        
+        $informacoesVeiculo['portas'] = $filtroConteudoAux[0];
 
-        $conteudoFiltro = explode('itemprop="fuelType">',$conteudo);            
-        $conteudoFiltro2 = explode("</span>",$conteudoFiltro[1]);        
-        $informacoes['combustivel'] = $conteudoFiltro2[0];
+        $filtroConteudo = explode('itemprop="fuelType">',$conteudo);            
+        $filtroConteudoAux = explode("</span>",$filtroConteudo[1]);        
+        $informacoesVeiculo['combustivel'] = $filtroConteudoAux[0];
 
-        $conteudoFiltro = explode('itemprop="color">',$conteudo);            
-        $conteudoFiltro2 = explode("</span>",$conteudoFiltro[1]);        
-        $informacoes['cor'] = $conteudoFiltro2[0];
+        $filtroConteudo = explode('itemprop="color">',$conteudo);            
+        $filtroConteudoAux = explode("</span>",$filtroConteudo[1]);        
+        $informacoesVeiculo['cor'] = $filtroConteudoAux[0];
 
-        $conteudoFiltro = explode('title="Final da placa">',$conteudo);            
-        $conteudoFiltro2 = explode("</span>",$conteudoFiltro[1]);        
-        $informacoes['placa'] = $conteudoFiltro2[0];
+        $filtroConteudo = explode('title="Final da placa">',$conteudo);            
+        $filtroConteudoAux = explode("</span>",$filtroConteudo[1]);        
+        $informacoesVeiculo['placa'] = $filtroConteudoAux[0];
 
-        $conteudoFiltro = explode('<span title="Aceita troca?">',$conteudo);            
-        $conteudoFiltro2 = explode("</span>",$conteudoFiltro[1]);        
-        $informacoes['troca'] = $conteudoFiltro2[0];
+        $filtroConteudo = explode('<span title="Aceita troca?">',$conteudo);            
+        $filtroConteudoAux = explode("</span>",$filtroConteudo[1]);        
+        $informacoesVeiculo['troca'] = $filtroConteudoAux[0];
 
-        return $informacoes;
+        return $informacoesVeiculo;
     }
 }
