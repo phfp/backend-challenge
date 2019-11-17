@@ -13,9 +13,7 @@ $ php artisan serve
 ```
 Por padrão o HTTP-server irá escutar a porta 8000 caso ela nao estiver sendo usada.
 <p>Exemplo de uso da rota 'search' do tipo POST para testes: http://127.0.0.1:8000/api/search
-
-Após acessar a rota 'search', serão listados os registros de veículos. Cada registro conterá um link encaminhando para a rota 'detalhes' do tipo GET, no qual irá detalhar as informações do veículo escolhido.
-
+    
 ###### Obs.: Utilise o Postman ou programa similar para realizar as requisições HTTP.
 
 Chaves/Valores
@@ -31,6 +29,8 @@ estado    =>  estado-novo ou estado-usado
 origem    =>  origem-revenda ou origem-particular
 placa     =>  string
 ```
+
+Após acessar a rota 'search', serão listados os registros de veículos. Cada registro conterá um link encaminhando para a rota 'detalhes' do tipo GET, no qual irá detalhar as informações do veículo escolhido.
 
 ## Ambiente de Desenvolvimento
 
